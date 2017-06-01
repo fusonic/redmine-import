@@ -1,0 +1,63 @@
+{
+    "redmine": {
+        "username": "john.doe",
+        "password": "",
+        "base-uri": "https://tracker.example.com/"
+    },
+    "git-lab": {
+        "private-token": "",
+        "base-uri": "https://gitlab.com/api/v4/projects/1337",
+
+        "labels-mapping": {
+            "tracker": {
+                "Feature": [
+                    "My-GitLab-Label-Name"
+                ]
+            },
+            "status": {
+                "In Progress": [
+                    "S-assigned"
+                ],
+                "Resolved": [
+                    "S-assigned"
+                ],
+                "Feedback": [
+                    "S-assigned",
+                    "S-clarifying"
+                ],
+                "Rejected": [
+                    "S-wontfix"
+                ]
+            },
+            "priority": {
+                "Low": [
+                    "P-low"
+                ],
+                "High": [
+                    "P-high"
+                ]
+            },
+            "custom-field": {
+                "Tags": {
+                    "Redmine checkbox option #1": [
+                        "GitLab-Label-Foo",
+                        "GitLab-Label-Bar"
+                    ],
+                    "Redmine checkbox option #2": [
+                        "GitLab-Label-Baz"
+                    ]
+                },
+                "Custom Field #2": {
+                    "Option #1": [
+                        "GitLab-Label-Foo"
+                    ]
+                }
+            }
+        },
+
+        "users-mapping": {
+            "1": 590454,
+            "2": 590454
+        }
+    }
+}
