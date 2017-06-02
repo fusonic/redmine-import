@@ -7,7 +7,6 @@ original ticket numbers by **overwriting** existing GitLab issues and inserting 
   * Tested with Redmine installation that used “GitRemote” VCS integration.
   * Dummy issues will be created as confidential.
   * Dummy issues will receive the label “import/skipped”.
-  * Attachments that are not referenced in ticket description or notes are **lost**.
   * **Does not** import more than 100 milestones (pagination not implemented when accessing GitLab API)
   * **Does not** import child issues/tasks as we do not use them at Fusonic.
   * **Does not** import watchers as they are not exposed/accessible using GitLab API.

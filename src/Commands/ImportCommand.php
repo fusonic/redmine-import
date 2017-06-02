@@ -324,6 +324,7 @@ final class ImportCommand extends Command
                     // <editor-fold desc="Upload attachments.">
 
                     $attachmentReplacementPairs = [ ];
+                    $attachmentUrls = [ ];
 
                     foreach ($ticketData["attachments"] as $attachment) {
                         $output->writeln("Uploading attachment “{$attachment['filename']}”.");
@@ -342,20 +343,31 @@ final class ImportCommand extends Command
                                 ]
                             ]
                         );
+                        $response = json_decode($response->getBody()->getContents(), true);
 
                         // Images in ticket descriptions (manually inserted by the author) are usually referenced using
                         // the 1st variant. Automated comments by Redmine will reference images using the 2nd variant.
 
+                        $attachmentUrls[$response["alt"]] = $response["url"];
+
                         $attachmentReferenceVariant1 = sprintf("![](%1\$s)", $attachment["filename"]);
                         $attachmentReferenceVariant2 = sprintf("![%1\$s](%1\$s)", $attachment["filename"]);
 
-                        $markdown = json_decode($response->getBody()->getContents(), true)["markdown"];
-
-                        $attachmentReplacementPairs[$attachmentReferenceVariant1] = $markdown;
-                        $attachmentReplacementPairs[$attachmentReferenceVariant2] = $markdown;
+                        $attachmentReplacementPairs[$attachmentReferenceVariant1] = $response["markdown"];
+                        $attachmentReplacementPairs[$attachmentReferenceVariant2] = $response["markdown"];
                     }
 
                     // </editor-fold>
+
+                    if (count($attachmentUrls) == 0) {
+                        $attachmentsTable = "";
+                    } else {
+                        $attachmentsTable = "\n\n| Attachments |\n| - |\n";
+
+                        foreach ($attachmentUrls as $alt => $url) {
+                            $attachmentsTable .= "| [{$alt}]($url) |";
+                        }
+                    }
 
                     $isDummyIssue = false;
                     $requestData = [
@@ -363,7 +375,8 @@ final class ImportCommand extends Command
                         "title" => $ticketData["subject"],
                         "description" =>
                             "__Created/reported by: {$ticketData['author']['name']}__\n\n" .
-                            strtr($ticketData["description"], $attachmentReplacementPairs)
+                            strtr($ticketData["description"], $attachmentReplacementPairs) .
+                            $attachmentsTable
                     ];
 
                     // <editor-fold desc="Assign milestone.">
