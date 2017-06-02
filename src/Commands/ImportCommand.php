@@ -440,18 +440,6 @@ final class ImportCommand extends Command
                 $gitLabHttpClient->post("issues", [ "json" => $requestData ]);
             }
 
-            // Close the issue if the Redmine status is configured that way.
-            // Always close dummy issues!
-
-            if ($isDummyIssue || in_array($ticketData["status"]["name"], $ticketStatusesThatWillCloseAnIssue)) {
-                $gitLabHttpClient->put(
-                    "issues/{$i}",
-                    [
-                        "json" => [ "state_event" => "close" ]
-                    ]
-                );
-            }
-
             // Add comments and relations to issue.
             // Relations are currently not supported by GitLab.
 
@@ -500,6 +488,18 @@ final class ImportCommand extends Command
                         );
                     }
                 }
+            }
+
+            // Close the issue if the Redmine status is configured that way.
+            // Always close dummy issues!
+
+            if ($isDummyIssue || in_array($ticketData["status"]["name"], $ticketStatusesThatWillCloseAnIssue)) {
+                $gitLabHttpClient->put(
+                    "issues/{$i}",
+                    [
+                        "json" => [ "state_event" => "close" ]
+                    ]
+                );
             }
 
             $output->writeln("<info>Successfully imported ticket #{$i} into GitLab.</info>\n");
