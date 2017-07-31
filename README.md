@@ -10,6 +10,7 @@ original ticket numbers by **overwriting** existing GitLab issues and inserting 
   * **Does not** import more than 100 milestones (pagination not implemented when accessing GitLab API)
   * **Does not** import child issues/tasks as we do not use them at Fusonic.
   * **Does not** import watchers as they are not exposed/accessible using GitLab API.
+  * **Does not** import issue relation types (e.g. “#1 _blocks_ #2”) as GitLab issue links do not support them.
 
 ## Usage
 
