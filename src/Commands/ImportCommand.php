@@ -232,8 +232,10 @@ final class ImportCommand extends Command
 
         // IMPORT ALL THE TICKETS AFTER PREPARATION.
 
-        $gitLabLabelsMapping = $configuration->{'git-lab'}->{'labels-mapping'};
-        $gitLabUsersMapping = $configuration->{'git-lab'}->{'users-mapping'};
+        $gitLabLabelsMapping = $configuration->{'git-lab'}->{'labels-mapping'} ?? null;
+        $gitLabUsersMapping = $configuration->{'git-lab'}->{'users-mapping'} ?? null;
+
+        $issueLinks = [ ];
 
         for ($i = $firstTicketNumberToImport; $i <= $mostRecentTicketNumber; $i++) {
             $output->writeln(
@@ -489,16 +491,10 @@ final class ImportCommand extends Command
 
                 if (isset($ticketData["relations"])) {
                     foreach ($ticketData["relations"] as $relation) {
-                        $gitLabHttpClient->post(
-                            "issues/{$i}/notes",
-                            [
-                                "json" => [
-                                    "body" =>
-                                        "#{$relation['issue_id']} {$relation['relation_type']} " .
-                                        "#{$relation['issue_to_id']}"
-                                ]
-                            ]
-                        );
+                        $issueLinks[] = [
+                            $relation['issue_id'],
+                            $relation['issue_to_id']
+                        ];
                     }
                 }
             }
@@ -516,6 +512,24 @@ final class ImportCommand extends Command
             }
 
             $output->writeln("<info>Successfully imported ticket #{$i} into GitLab.</info>\n");
+        }
+
+        // Restore issue links.
+
+        $encodedProjectId = basename($gitLabHttpClient->getConfig("base_uri")->getPath());
+
+        foreach ($issueLinks as $issueLink) {
+            $gitLabHttpClient->post(
+                "issues/{$issueLink[0]}/links",
+                [
+                    "json" => [
+                        "target_project_id" => $encodedProjectId,
+                        "target_issue_iid" => $issueLink[1]
+                    ]
+                ]
+            );
+
+            $output->writeln("<info>Added issue link #{$issueLink[0]} ⇄ #{$issueLink[1]}.</info>");
         }
 
         return 0;
