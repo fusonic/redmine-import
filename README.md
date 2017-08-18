@@ -18,6 +18,9 @@ First, you need to create a config file containing access keys, assignee mapping
 data (tracker, status, priority, custom fields). See `app/config/sample.json`. A JSON schema can be found
 `app/config/schema.json`. The config file MUST conform to that schema.
 
+We recommend to use numeric project IDs **only**. GitLab's API does sometimes contain bugs regarding encoding/decoding
+of the alphanumeric project name. Will eventually lead to API responses with status code 404. 
+
 Then, run the import command:
 
 ```bash
