@@ -7,6 +7,7 @@ original ticket numbers by **overwriting** existing GitLab issues and inserting 
   * Tested with Redmine installation that used “GitRemote” VCS integration.
   * Dummy issues will be created as confidential.
   * Dummy issues will receive the label “import/skipped”.
+  * Private issues notes will become **public** (see below).
   * **Does not** import more than 100 milestones (pagination not implemented when accessing GitLab API)
   * **Does not** import child issues/tasks as we do not use them at Fusonic.
   * **Does not** import watchers as they are not exposed/accessible using GitLab API.
@@ -43,6 +44,15 @@ https://gitlab.com/api/v4/users?username=allgaeuer.fabian
 ```
 
 Redmine assignees without a corresponding GitLab user ID are discarded. Issues will then be created without an assignee.
+
+## Private issue notes
+
+Redmine does not expose via API whether a issue note is private or not. We therefore recommend to export and delete all
+private issue notes from Redmine's database prior performing the import:
+
+```sql
+SELECT * FROM journals WHERE private_notes = 1
+```
 
 ## Why another import tool?
 
