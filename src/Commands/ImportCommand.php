@@ -462,7 +462,8 @@ final class ImportCommand extends Command
 
             if (!$isDummyIssue) {
                 foreach ($ticketData["journals"] as $ticketEvent) {
-                    // TODO: The Redmine API does not expose whether it is a private issue note.
+                    // Attention!
+                    // Redmine API does not expose whether it is a private issue note. See README.md.
 
                     if (isset($ticketEvent["notes"]) && strlen($ticketEvent["notes"]) > 0) {
                         // Extract commit hash from automated comments added by VCS integration.
