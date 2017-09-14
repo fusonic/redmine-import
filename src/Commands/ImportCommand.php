@@ -364,11 +364,13 @@ final class ImportCommand extends Command
                     if (count($attachmentUrls) == 0) {
                         $attachmentsTable = "";
                     } else {
-                        $attachmentsTable = "\n\n| Attachments |\n| - |\n";
+                        $tableRows = [ ];
 
                         foreach ($attachmentUrls as $alt => $url) {
-                            $attachmentsTable .= "| [{$alt}]($url) |";
+                            $tableRows[] = "| [{$alt}]($url) |";
                         }
+
+                        $attachmentsTable = "\n\n| Attachments |\n| - |\n" . implode("\n", $tableRows);
                     }
 
                     $isDummyIssue = false;
